@@ -95,12 +95,19 @@ class Notification:
 
             is_winning = winning['money'] != "-" and winning['money'] != "0 원" and winning['money'] != "0"
             
+            win_num = winning.get("win_num", [])
+            if win_num:
+                win_num_str = ", ".join(map(str, win_num))
+                win_num_header = f"당첨 번호: **{win_num_str}**\n"
+            else:
+                win_num_header = ""
+
             if is_winning:
                 winning_message = f"로또 *{winning['round']}회* - *{winning['money']}* 당첨 되었습니다 🎉 (남은잔액 : {balance_str})"
             else:
                 winning_message = f"로또 *{winning['round']}회* - 다음 기회에... 🫠 (남은잔액 : {balance_str})"
 
-            self._send_discord_webhook(webhook_url, f"```ini\n{formatted_results}```\n{winning_message}")
+            self._send_discord_webhook(webhook_url, f"{win_num_header}```ini\n{formatted_results}```\n{winning_message}")
         except KeyError:
             message = f"로또 - 다음 기회에... 🫠 (남은잔액 : {balance_str})"
             self._send_discord_webhook(webhook_url, message)
@@ -112,6 +119,17 @@ class Notification:
 
         balance_str = winning.get('balance', '확인불가')
         try:
+            win_num = winning.get("win_num", [])
+            if win_num:
+                win_num_str = "".join(map(str, win_num))
+                if len(win_num_str) == 7:
+                    win_num_str = f"{win_num_str[0]}조 " + " ".join(win_num_str[1:])
+                else:
+                    win_num_str = " ".join(map(str, win_num))
+                win_num_header = f"당첨 번호: **{win_num_str}**\n"
+            else:
+                win_num_header = ""
+
             if "win720_details" in winning and winning["win720_details"]:
                 max_label_status_length = max(len(f"{line['label']} {line['status']}") for line in winning["win720_details"])
                 formatted_lines = []
@@ -120,9 +138,9 @@ class Notification:
                     formatted_lines.append(f"{line_label_status} {line['result']}")
                 
                 formatted_results = "\n".join(formatted_lines)
-                message_content = f"```ini\n{formatted_results}```\n"
+                message_content = f"{win_num_header}```ini\n{formatted_results}```\n"
             else:
-                message_content = ""
+                message_content = f"{win_num_header}"
 
             is_winning = winning['money'] != "-" and winning['money'] != "0 원" and winning['money'] != "0"
 

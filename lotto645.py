@@ -346,6 +346,7 @@ class Lotto645:
                         })
                     
                     result_data["lotto_details"] = lotto_details
+                    result_data["win_num"] = win_num
 
                 except (requests.RequestException, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
                     logger.error(f"[Error] Detail parse error (url={detail_url}, params={detail_params}): {e}")

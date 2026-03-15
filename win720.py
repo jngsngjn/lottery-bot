@@ -323,6 +323,7 @@ class Win720:
                             detail_data = res_detail.json()
                             
                             detail_data = detail_data.get("data", detail_data)
+                            win_num = detail_data.get("win_num", [])
                             
                             win720_details = []
                             
@@ -394,6 +395,7 @@ class Win720:
                                     })
                                     
                             result_data["win720_details"] = win720_details
+                            result_data["win_num"] = win_num
 
                         except Exception as e:
                             logger.error(f"[Error] Win720 detail error: {e}")
